@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detektif Berat</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%95%B5%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+
+  <header class="topbar">
+    <button class="brand" type="button" data-target="home">🕵️ Detektif Berat</button>
+  </header>
+
+  <!-- ============ HOME / NAVIGATION VIEW ============ -->
+  <div class="view active" id="view-home">
+    <div class="home-hero">
+      <h1>Kasus Timbangan Misterius</h1>
+      <p>Tiga benda ditimbang berpasangan. Pilih cara belajarmu untuk memecahkan kasusnya!</p>
+    </div>
+    <main>
+      <section>
+        <h2>Pilih Cara Detektif</h2>
+        <p class="section-intro">Kamu bisa coba salah satu dulu, lalu balik ke sini untuk mencoba yang lain.</p>
+        <div class="approach-cards">
+          <button class="approach-card" type="button" data-target="quiz">
+            <span class="approach-emoji" aria-hidden="true">🔍</span>
+            <span>
+              <strong>Coba &amp; Cocokkan</strong>
+              <span class="desc">Tebak salah satu berat, lalu cek langsung ke timbangan lain. Cocok untuk yang baru mulai.</span>
+            </span>
+          </button>
+          <button class="approach-card" type="button" data-target="trick">
+            <span class="approach-emoji" aria-hidden="true">🧮</span>
+            <span>
+              <strong>Trik Cepat</strong>
+              <span class="desc">Jumlahkan, bagi dua, kurangi — jawabannya langsung ketemu tanpa menebak.</span>
+            </span>
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ============ QUIZ VIEW: COBA & COCOKKAN ============ -->
+  <div class="view" id="view-quiz">
+    <main>
+      <section id="tutorial-section">
+        <h2>Bagaimana Cara Detektif Bekerja?</h2>
+        <p class="section-intro">Ikuti 3 langkah ini untuk memecahkan kasus pertama.</p>
+        <div class="case" id="tutorial"></div>
+      </section>
+
+      <section id="practice-section">
+        <h2>Sekarang, Giliranmu Jadi Detektif!</h2>
+        <p class="section-intro">Selesaikan tiga kasus baru. Ada yang pakai simbol, lho!</p>
+        <div class="progress">
+          <span class="progress-star" data-idx="0">☆</span>
+          <span class="progress-star" data-idx="1">☆</span>
+          <span class="progress-star" data-idx="2">☆</span>
+          <span class="progress-text" id="progress-text">0 dari 3 kasus terpecahkan</span>
+        </div>
+        <div class="case" id="p1"></div>
+        <div class="case" id="p2"></div>
+        <div class="case" id="p3"></div>
+      </section>
+
+      <details class="note-parent">
+        <summary>Rahasia untuk Bunda/Ayah/Guru 🧮</summary>
+        <p>Ada cara cepat tanpa coba-coba: jumlahkan ketiga angka timbangan, lalu bagi dua — hasilnya total berat ketiga benda. Kurangi dengan timbangan yang tidak memuat benda yang dicari, dan ketemu jawabannya.</p>
+        <p>Contoh kasus pertama: 50 + 60 + 70 = 180, lalu 180 ÷ 2 = 90 (total berat A+B+C). Timbangan tanpa B adalah A+C = 60. Maka B = 90 − 60 = 30 gram.</p>
+        <p><button class="text-link" type="button" data-target="trick">Lihat animasi Trik Cepat ini</button></p>
+      </details>
+    </main>
+  </div>
+
+  <!-- ============ TRICK VIEW: TRIK CEPAT ============ -->
+  <div class="view" id="view-trick">
+    <main>
+      <section id="walkthrough">
+        <h2>Langkah Rahasia</h2>
+        <p class="section-intro">Ikuti animasi ini untuk melihat triknya bekerja pada kasus A, B, C.</p>
+
+        <div class="stage-card">
+          <div class="stage-dots" id="stage-dots"></div>
+          <h3 class="stage-title" id="stage-title"></h3>
+          <div class="stage-body" id="stage-body"></div>
+          <p class="stage-caption" id="stage-caption"></p>
+          <div class="stage-nav">
+            <button class="nav-btn" id="prevBtn" type="button">‹ Sebelumnya</button>
+            <span class="stage-counter" id="stage-counter"></span>
+            <button class="nav-btn" id="nextBtn" type="button">Lanjut ›</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="cheatsheet">
+        <h2>Rumus dalam Satu Gambar</h2>
+        <p class="section-intro">Simpan ini untuk kasus apa pun berikutnya.</p>
+        <div class="flow">
+          <div class="flow-box"><strong>1. Jumlahkan</strong><span>Tambahkan angka di ketiga timbangan</span></div>
+          <div class="flow-arrow"></div>
+          <div class="flow-box"><strong>2. Bagi Dua</strong><span>Hasilnya adalah total berat ketiga benda</span></div>
+          <div class="flow-arrow"></div>
+          <div class="flow-box"><strong>3. Kurangi</strong><span>Kurangi dengan timbangan yang tidak memuat benda yang dicari</span></div>
+          <div class="flow-arrow"></div>
+          <div class="flow-box"><strong>4. Selesai!</strong><span>Sisanya adalah berat benda itu</span></div>
+        </div>
+      </section>
+
+      <p style="text-align:center; margin-top:10px;">
+        <button class="text-link" type="button" data-target="quiz">Ingin latihan coba-coba lagi?</button>
+      </p>
+    </main>
+  </div>
+
+  <footer>Selamat menjadi detektif berat! 🕵️</footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
