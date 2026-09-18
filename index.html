@@ -42,6 +42,13 @@
               <span class="desc">Jumlahkan, bagi dua, kurangi — jawabannya langsung ketemu tanpa menebak.</span>
             </span>
           </button>
+          <button class="approach-card" type="button" data-target="chain">
+            <span class="approach-emoji" aria-hidden="true">🔗</span>
+            <span>
+              <strong>Rantai Konversi</strong>
+              <span class="desc">Benda-benda saling berhubungan berantai — ikuti jejaknya dari yang pasti sampai yang dicari.</span>
+            </span>
+          </button>
         </div>
       </section>
     </main>
@@ -116,6 +123,65 @@
       <p style="text-align:center; margin-top:10px;">
         <button class="text-link" type="button" data-target="quiz">Ingin latihan coba-coba lagi?</button>
       </p>
+    </main>
+  </div>
+
+  <!-- ============ CHAIN VIEW: RANTAI KONVERSI ============ -->
+  <div class="view" id="view-chain">
+    <main>
+      <section id="chain-walkthrough">
+        <h2>Langkah Rahasia Rantai</h2>
+        <p class="section-intro">Kotak, Segitiga, dan Bulat saling berhubungan. Ikuti animasi ini untuk mencari berat Kotak.</p>
+
+        <div class="stage-card">
+          <div class="stage-dots" id="chain-stage-dots"></div>
+          <h3 class="stage-title" id="chain-stage-title"></h3>
+          <div class="stage-body" id="chain-stage-body"></div>
+          <p class="stage-caption" id="chain-stage-caption"></p>
+          <div class="stage-nav">
+            <button class="nav-btn" id="chain-prevBtn" type="button">‹ Sebelumnya</button>
+            <span class="stage-counter" id="chain-stage-counter"></span>
+            <button class="nav-btn" id="chain-nextBtn" type="button">Lanjut ›</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="chain-no-gram">
+        <h2>Kadang Tidak Ada Angka Gram</h2>
+        <p class="section-intro">Kalau tidak ada satupun timbangan yang punya angka gram, kita cukup kalikan semua rasionya dari ujung ke ujung.</p>
+        <div class="case chain-note" id="chain-no-gram-case"></div>
+      </section>
+
+      <section id="chain-example">
+        <h2>Contoh Soal Asli: Kelinci vs Anak Ayam</h2>
+        <p class="section-intro">Ini salah satu soal olimpiade asli — rantainya lebih panjang (3 langkah), tapi caranya sama persis!</p>
+
+        <div class="stage-card">
+          <div class="stage-dots" id="chain-stage-dots-b"></div>
+          <h3 class="stage-title" id="chain-stage-title-b"></h3>
+          <div class="stage-body" id="chain-stage-body-b"></div>
+          <p class="stage-caption" id="chain-stage-caption-b"></p>
+          <div class="stage-nav">
+            <button class="nav-btn" id="chain-prevBtn-b" type="button">‹ Sebelumnya</button>
+            <span class="stage-counter" id="chain-stage-counter-b"></span>
+            <button class="nav-btn" id="chain-nextBtn-b" type="button">Lanjut ›</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="chain-cheatsheet">
+        <h2>Rumus dalam Satu Gambar</h2>
+        <p class="section-intro">Simpan ini untuk rantai apa pun berikutnya.</p>
+        <div class="flow">
+          <div class="flow-box"><strong>1. Cari Titik Awal</strong><span>Temukan timbangan yang punya angka gram pasti</span></div>
+          <div class="flow-arrow"></div>
+          <div class="flow-box"><strong>2. Hitung Satu Benda</strong><span>Bagi atau kali untuk cari berat satu benda di situ</span></div>
+          <div class="flow-arrow"></div>
+          <div class="flow-box"><strong>3. Lompat Lewat Jembatan</strong><span>Pindah ke timbangan sebelah yang punya benda YANG SAMA</span></div>
+          <div class="flow-arrow"></div>
+          <div class="flow-box"><strong>4. Ulangi Sampai Ketemu</strong><span>Tidak ada gram sama sekali? Kalikan saja semua rasio dari ujung ke ujung</span></div>
+        </div>
+      </section>
     </main>
   </div>
 

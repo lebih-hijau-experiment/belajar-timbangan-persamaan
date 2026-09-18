@@ -340,7 +340,218 @@
 })();
 
 
-/* ===================== VIEW ROUTER (home / quiz / trick) ===================== */
+/* ===================== RANTAI KONVERSI (chain conversion) ===================== */
+(function(){
+  "use strict";
+
+  var kotak = { shape:'square', color:'#2B2D42' };
+  var segitiga = { shape:'triangle', color:'#FB8B24' };
+  var bulat = { shape:'circle', color:'#4EA8DE' };
+  var love = { shape:'heart', color:'#FF477E' };
+
+  function heartSVG(color){
+    return '<svg viewBox="0 0 32 29"><path d="M16 29 C6 21 0 15 0 8.5 C0 3.8 3.8 0 8.5 0 C11.9 0 14.6 2 16 4.9 C17.4 2 20.1 0 23.5 0 C28.2 0 32 3.8 32 8.5 C32 15 26 21 16 29 Z" fill="' + color + '"/></svg>';
+  }
+
+  function itemHTML(it, size){
+    var cls = 'item item-' + it.shape + (size ? ' item-' + size : '');
+    if(it.shape === 'heart'){ return '<div class="' + cls + '">' + heartSVG(it.color) + '</div>'; }
+    return '<div class="' + cls + '" style="background:' + it.color + '"></div>';
+  }
+
+  function repeat(it, n, size){
+    var out = '';
+    for(var i = 0; i < n; i++){ out += itemHTML(it, size); }
+    return out;
+  }
+
+  function pan(html){ return '<div class="pan">' + html + '</div>'; }
+  function gramPan(value){ return '<div class="pan"><span class="chip">' + value + ' g</span></div>'; }
+
+  function balanceHTML(leftHTML, rightHTML, highlighted){
+    return '<div class="balance' + (highlighted ? ' highlight' : '') + '">' +
+      '<div class="balance-row">' + pan(leftHTML) + '<span class="balance-eq">=</span>' + rightHTML + '</div>' +
+      '<div class="fulcrum"></div>' +
+    '</div>';
+  }
+
+  var STAGES = [
+    {
+      title: 'Kumpulkan Timbangan Berantai',
+      caption: 'Kita punya 3 timbangan berantai: Kotak, Segitiga, dan Bulat saling berhubungan — hanya timbangan terakhir yang punya angka gram.',
+      render: function(el){
+        el.innerHTML =
+          balanceHTML(repeat(kotak, 1), pan(repeat(segitiga, 2))) +
+          balanceHTML(repeat(segitiga, 1), pan(repeat(bulat, 3))) +
+          balanceHTML(repeat(bulat, 2), gramPan(30));
+      }
+    },
+    {
+      title: 'Mulai dari Angka yang Pasti',
+      caption: 'Mulai dari timbangan yang sudah punya angka gram: 2 Bulat = 30 g, jadi 1 Bulat = 15 gram.',
+      render: function(el){
+        el.innerHTML =
+          balanceHTML(repeat(bulat, 2), gramPan(30), true) +
+          '<div class="eq-row"><span class="chip">30</span><span class="op">÷</span><span class="chip">2</span><span class="op">=</span><span class="chip chip-lg chip-highlight">15 g</span></div>';
+      }
+    },
+    {
+      title: 'Lompat Lewat Jembatan Bulat',
+      caption: 'Bulat adalah jembatannya! 1 Segitiga = 3 Bulat = 3 × 15 = 45 gram.',
+      render: function(el){
+        el.innerHTML =
+          balanceHTML(repeat(segitiga, 1), pan(repeat(bulat, 3)), true) +
+          '<div class="eq-row"><span class="chip">15</span><span class="op">×</span><span class="chip">3</span><span class="op">=</span><span class="chip chip-lg chip-highlight">45 g</span></div>';
+      }
+    },
+    {
+      title: 'Lompat Lewat Jembatan Segitiga',
+      caption: 'Segitiga adalah jembatan berikutnya! 1 Kotak = 2 Segitiga = 2 × 45 = 90 gram.',
+      render: function(el){
+        el.innerHTML =
+          balanceHTML(repeat(kotak, 1), pan(repeat(segitiga, 2)), true) +
+          '<div class="eq-row"><span class="chip">45</span><span class="op">×</span><span class="chip">2</span><span class="op">=</span><span class="chip chip-lg chip-highlight">90 g</span></div>';
+      }
+    },
+    {
+      title: 'Jawaban Ditemukan!',
+      caption: 'Berat 1 Kotak = 90 gram!',
+      render: function(el){
+        el.innerHTML =
+          itemHTML(kotak, 'lg') +
+          '<div class="chip chip-lg chip-highlight" style="margin-top:8px;">90 g</div>' +
+          '<div class="stamp">KASUS TERPECAHKAN! 🎉</div>';
+      }
+    }
+  ];
+
+  function initStepper(ids, stages){
+    var current = 0;
+    var dotsEl = document.getElementById(ids.dots);
+    var titleEl = document.getElementById(ids.title);
+    var bodyEl = document.getElementById(ids.body);
+    var captionEl = document.getElementById(ids.caption);
+    var counterEl = document.getElementById(ids.counter);
+    var prevBtn = document.getElementById(ids.prev);
+    var nextBtn = document.getElementById(ids.next);
+
+    stages.forEach(function(_, i){
+      var d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'dot';
+      d.setAttribute('aria-label', 'Langkah ' + (i + 1));
+      d.addEventListener('click', function(){ goTo(i); });
+      dotsEl.appendChild(d);
+    });
+
+    function goTo(i){
+      current = Math.max(0, Math.min(stages.length - 1, i));
+      var stage = stages[current];
+      titleEl.textContent = stage.title;
+      bodyEl.classList.remove('stage-enter');
+      void bodyEl.offsetWidth;
+      stage.render(bodyEl);
+      bodyEl.classList.add('stage-enter');
+      captionEl.textContent = stage.caption;
+      counterEl.textContent = (current + 1) + ' / ' + stages.length;
+      dotsEl.querySelectorAll('.dot').forEach(function(d, idx){ d.classList.toggle('active', idx === current); });
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === stages.length - 1;
+    }
+
+    prevBtn.addEventListener('click', function(){ goTo(current - 1); });
+    nextBtn.addEventListener('click', function(){ goTo(current + 1); });
+
+    goTo(0);
+  }
+
+  initStepper({
+    dots:'chain-stage-dots', title:'chain-stage-title', body:'chain-stage-body',
+    caption:'chain-stage-caption', counter:'chain-stage-counter', prev:'chain-prevBtn', next:'chain-nextBtn'
+  }, STAGES);
+
+  /* ---------- Real-problem example: Kelinci - Tupai - Itik - Anak Ayam ---------- */
+  function emoji(symbol, size){
+    return '<span class="emoji-icon' + (size ? ' emoji-' + size : '') + '">' + symbol + '</span>';
+  }
+  function repeatEmoji(symbol, n, size){
+    var out = '';
+    for(var i = 0; i < n; i++){ out += emoji(symbol, size); }
+    return out;
+  }
+  function figLabel(text){ return '<div class="balance-label">' + text + '</div>'; }
+
+  var rabbit = '🐇', squirrel = '🐿️', duckling = '🦆', chick = '🐤';
+
+  var STAGES_ANIMALS = [
+    {
+      title: 'Kumpulkan 3 Timbangan + 1 Pertanyaan',
+      caption: 'Ada 3 timbangan yang diketahui, dan 1 pertanyaan: berapa Anak Ayam beratnya sama dengan 1 Kelinci?',
+      render: function(el){
+        el.innerHTML =
+          balanceHTML(repeatEmoji(rabbit, 1), pan(repeatEmoji(squirrel, 3))) + figLabel('Gambar 1') +
+          balanceHTML(repeatEmoji(squirrel, 1), pan(repeatEmoji(duckling, 3))) + figLabel('Gambar 2') +
+          balanceHTML(repeatEmoji(duckling, 1), pan(repeatEmoji(chick, 2))) + figLabel('Gambar 3') +
+          '<div class="balance question">' +
+            '<div class="balance-row">' + pan(repeatEmoji(rabbit, 1)) + '<span class="balance-eq">=</span>' + pan('<span class="emoji-icon">❓</span>' + emoji(chick, 1)) + '</div>' +
+            '<div class="fulcrum"></div>' +
+          '</div>' + figLabel('Gambar 4 — yang ditanyakan');
+      }
+    },
+    {
+      title: 'Kelinci ke Tupai',
+      caption: 'Rasio pertama: 1 Kelinci = 3 Tupai.',
+      render: function(el){
+        el.innerHTML = balanceHTML(repeatEmoji(rabbit, 1), pan(repeatEmoji(squirrel, 3)), true);
+      }
+    },
+    {
+      title: 'Tupai ke Itik (Lewat Jembatan Tupai)',
+      caption: 'Tupai adalah jembatannya! 3 Tupai = 3 × 3 = 9 Itik.',
+      render: function(el){
+        el.innerHTML =
+          balanceHTML(repeatEmoji(squirrel, 1), pan(repeatEmoji(duckling, 3)), true) +
+          '<div class="eq-row"><span class="chip">3 Tupai</span><span class="op">=</span><span class="chip">3×3</span><span class="op">=</span><span class="chip chip-lg chip-highlight">9 Itik</span></div>';
+      }
+    },
+    {
+      title: 'Itik ke Anak Ayam (Lewat Jembatan Itik)',
+      caption: 'Itik adalah jembatan berikutnya! 9 Itik = 9 × 2 = 18 Anak Ayam.',
+      render: function(el){
+        el.innerHTML =
+          balanceHTML(repeatEmoji(duckling, 1), pan(repeatEmoji(chick, 2)), true) +
+          '<div class="eq-row"><span class="chip">9 Itik</span><span class="op">=</span><span class="chip">9×2</span><span class="op">=</span><span class="chip chip-lg chip-highlight">18 Anak Ayam</span></div>';
+      }
+    },
+    {
+      title: 'Jawaban Ditemukan!',
+      caption: '1 Kelinci = 18 Anak Ayam!',
+      render: function(el){
+        el.innerHTML =
+          emoji(rabbit, 'lg') +
+          '<div class="chip chip-lg chip-highlight" style="margin-top:8px;">18 Anak Ayam</div>' +
+          '<div class="stamp">KASUS TERPECAHKAN! 🎉</div>';
+      }
+    }
+  ];
+
+  initStepper({
+    dots:'chain-stage-dots-b', title:'chain-stage-title-b', body:'chain-stage-body-b',
+    caption:'chain-stage-caption-b', counter:'chain-stage-counter-b', prev:'chain-prevBtn-b', next:'chain-nextBtn-b'
+  }, STAGES_ANIMALS);
+
+  /* ---------- Static "no gram" example ---------- */
+  var noGramEl = document.getElementById('chain-no-gram-case');
+  noGramEl.innerHTML =
+    '<p><strong>Contoh:</strong> 1 Love = 3 Kotak, dan 1 Kotak = 2 Bulat. Berapa Bulat beratnya sama dengan 1 Love?</p>' +
+    balanceHTML(repeat(love, 1), pan(repeat(kotak, 3))) +
+    balanceHTML(repeat(kotak, 1), pan(repeat(bulat, 2))) +
+    '<div class="eq-row" style="margin-top:10px;"><span class="chip">3</span><span class="op">×</span><span class="chip">2</span><span class="op">=</span><span class="chip chip-lg chip-highlight">6 Bulat</span></div>' +
+    '<p>Tidak perlu cari angka gram sama sekali — langsung kalikan rasio Love→Kotak dengan Kotak→Bulat.</p>';
+})();
+
+
+/* ===================== VIEW ROUTER (home / quiz / trick / chain) ===================== */
 (function(){
   "use strict";
   var views = document.querySelectorAll('.view');
